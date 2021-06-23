@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export async function artistSearchAPI(artist) {
   let result;
-  const URL = `http://localhost:4000/artist/${artist}`;
+  const URL = `http://localhost:5000/artist/${artist}`;
 
   const config = {
     headers: {
@@ -23,7 +23,7 @@ export async function initialSearchAPI(searchInfo) {
   console.log(artist);
   console.log(song);
   let result;
-  const URL = `http://localhost:4000/setlist/${artist}/${song}`;
+  const URL = `http://localhost:5000/setlist/${artist}/${song}`;
 
   const config = {
     headers: {

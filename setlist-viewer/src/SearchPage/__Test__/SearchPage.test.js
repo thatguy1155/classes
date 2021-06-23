@@ -4,11 +4,17 @@ import {
 import userEvent from '@testing-library/user-event';
 import renderer from 'react-test-renderer';
 import SearchForm from '../Components/SearchForm';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
 
 describe('My SearchPage', () => {
   const callback = jest.fn();
+  const history = createMemoryHistory();
+  history.push('/');
   const component = renderer.create(
-    <SearchForm artistName="" search={callback} />,
+    <Router>
+      <SearchForm artistName="" search={callback} />
+    </Router>,
   );
 
   it('should render the Search Page', () => {

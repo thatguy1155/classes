@@ -1,25 +1,31 @@
-import React from 'react';
-import { Chart, registerables } from 'chart.js';
+import React, { useContext, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 
-Chart.register(...registerables);
-
-export default function Graph() {
+export default function Graph(props) {
+  // TODO: if info is empty push to search page
+  const { tally } = props;
+  console.log(tally);
+  const title = tally.length > 0 && Object.keys(tally[0])[0];
+  const labels = tally.length > 0 && Object.keys(tally[0][title]);
+  const data = tally.length > 0 && Object.values(tally[0][title]);
   const state = {
-    labels: ['January', 'February', 'March',
-      'April', 'May'],
+    labels,
     datasets: [
       {
-        label: 'Rainfall',
+        label: title,
         fill: false,
         lineTension: 0.5,
         backgroundColor: 'rgba(75,192,192,1)',
         borderColor: 'rgba(0,0,0,1)',
         borderWidth: 2,
-        data: [65, 59, 80, 81, 56],
+        data,
       },
     ],
   };
+  useEffect(() => {
+    console.log(tally);
+  }, [tally]);
+
   return (
     <div>
       <Line

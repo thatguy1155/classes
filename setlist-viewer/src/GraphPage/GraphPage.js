@@ -5,16 +5,34 @@ import {
 import { AppContext } from '../Context/Context';
 import Graph from './Components/Graph';
 import Loading from '../Components/Loading/Loading';
+import ExtraSong from './Components/ExtraSong';
 import './GraphPage.css';
+import { Link, useHistory } from 'react-router-dom';
 
-export default function GraphPage(props) {
-  const { artistName, isLoading } = useContext(AppContext);
+export default function GraphPage() {
+  const history = useHistory();
+  const { artistName, isLoading, tally } = useContext(AppContext);
+  const emptyPage = tally.length < 1 && !isLoading;
+  const loadingPage = isLoading && tally.length < 1;
+  const loadingAdditionalSong = isLoading && tally.length > 0;
+
+  useEffect(() => {
+    console.log(tally);
+    if (emptyPage) history.push('/');
+    // eslint-disable-line
+  }, []);
+  const submit = () => console.log('placeholer');
 
   return (
     <Container fluid>
       <Row>
         <Col>
-          {isLoading ? <Loading /> : <Graph />}
+          {loadingPage ? <Loading /> : <Graph tally={tally} />}
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          {loadingAdditionalSong ? <Loading /> : <ExtraSong submit={submit} />}
         </Col>
       </Row>
     </Container>

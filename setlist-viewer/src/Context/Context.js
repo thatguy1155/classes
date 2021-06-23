@@ -17,32 +17,34 @@ function AppContextProvider(props) {
   const [tally, setTally] = useState([]);
   const [selectedArtist, setSelectedArtist] = useState('');
 
-  const parseByYear = (arrayOfDates, song) => {
+  const parseByYear = (songObject, song) => {
+    const fixedSong = song.replace('%20', ' ');
+    const arrayOfDates = songObject[fixedSong];
     const songTally = {};
-    songTally[song] = {};
+    songTally[fixedSong] = {};
     arrayOfDates.forEach((date) => {
       const splitDate = date.split('-');
-      const yearInTally = Object.keys(songTally.song).includes(splitDate[2]);
+      const yearInTally = Object.keys(songTally[fixedSong]).includes(splitDate[2]);
       if (yearInTally) {
-        songTally.song[splitDate[2]] += 1;
+        songTally[fixedSong][splitDate[2]] += 1;
       } else {
-        songTally.song[splitDate[2]] = 1;
+        songTally[fixedSong][splitDate[2]] = 1;
       }
     });
     console.log(songTally);
-    setTally([...songTally]);
+    setTally([songTally]);
+    console.log(tally);
   };
   const search = async (searchInfo) => {
     setIsLoading(true);
-    const datesWhenSongIsPlayed = initialSearch(searchInfo);
-    // console.log(await possibleArtistMatches);
-    parseByYear(datesWhenSongIsPlayed);
+    const datesWhenSongIsPlayed = await initialSearch(searchInfo);
+    parseByYear(datesWhenSongIsPlayed, searchInfo.song);
     setIsLoading(false);
   };
 
   return (
     <AppContext.Provider value={{
-      parseByYear,
+      tally,
       search,
       isLoading,
     }}
