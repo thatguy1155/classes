@@ -5,8 +5,10 @@ import { initialSearch } from '../Controllers/Controller';
 export const AppContext = createContext(
   {
     isLoading: false,
+    error: false,
     search: (searchInfo) => {},
-    tally: (searchInfo) => {},
+    tally: (searchInfo) => [{}],
+    clearError: () => {},
     parseByYear: (arrayOfDates) => {},
   },
 );
@@ -15,38 +17,46 @@ export const AppContext = createContext(
 function AppContextProvider(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [tally, setTally] = useState([]);
-  const [selectedArtist, setSelectedArtist] = useState('');
+  const [error, setError] = useState(false);
 
-  const parseByYear = (songObject, song) => {
-    const fixedSong = song.replace('%20', ' ');
-    const arrayOfDates = songObject[fixedSong];
+  const parseByYear = (songObject, songName) => {
+    const fixedSongName = songName.replace('%20', ' ');
+    const arrayOfDates = songObject[fixedSongName];
     const songTally = {};
-    songTally[fixedSong] = {};
+    songTally[fixedSongName] = {};
     arrayOfDates.forEach((date) => {
-      const splitDate = date.split('-');
-      const yearInTally = Object.keys(songTally[fixedSong]).includes(splitDate[2]);
+      const year = getYear(date);
+      const yearInTally = Object.keys(songTally[fixedSongName]).includes(year);
       if (yearInTally) {
-        songTally[fixedSong][splitDate[2]] += 1;
+        songTally[fixedSongName][year] += 1;
       } else {
-        songTally[fixedSong][splitDate[2]] = 1;
+        songTally[fixedSongName][year] = 1;
       }
     });
-    console.log(songTally);
     setTally([songTally]);
-    console.log(tally);
   };
+
   const search = async (searchInfo) => {
     setIsLoading(true);
     const datesWhenSongIsPlayed = await initialSearch(searchInfo);
-    parseByYear(datesWhenSongIsPlayed, searchInfo.song);
+    if (Object.keys(datesWhenSongIsPlayed)[0] !== '__error__') parseByYear(datesWhenSongIsPlayed, searchInfo.song);
+    else setError(true);
     setIsLoading(false);
   };
+
+  const clearError = () => {
+    setError(false);
+  };
+
+  const getYear = (date) => date.split('-')[2];
 
   return (
     <AppContext.Provider value={{
       tally,
       search,
       isLoading,
+      error,
+      clearError,
     }}
     >
       {props.children}

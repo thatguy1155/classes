@@ -11,16 +11,22 @@ import { Link, useHistory } from 'react-router-dom';
 
 export default function GraphPage() {
   const history = useHistory();
-  const { artistName, isLoading, tally } = useContext(AppContext);
+  const {
+    artistName, isLoading, tally, error,
+  } = useContext(AppContext);
   const emptyPage = tally.length < 1 && !isLoading;
   const loadingPage = isLoading && tally.length < 1;
   const loadingAdditionalSong = isLoading && tally.length > 0;
 
   useEffect(() => {
-    console.log(tally);
-    if (emptyPage) history.push('/');
+    console.log(error);
+    if (emptyPage && !error) history.push('/');
     // eslint-disable-line
   }, []);
+  useEffect(() => {
+    if (error) history.push('/error');
+    // eslint-disable-line
+  }, [error]);
   const submit = () => console.log('placeholer');
 
   return (

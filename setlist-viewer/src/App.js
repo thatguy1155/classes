@@ -6,6 +6,7 @@ import AppContextProvider from './Context/Context';
 import './App.css';
 import SearchPage from './SearchPage/SearchPage';
 import GraphPage from './GraphPage/GraphPage';
+import ErrorPage from './ErrorPage/ErrorPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={SearchPage} />
             <Route exact path="/results" component={GraphPage} />
+            <Route exact path="/error" component={ErrorPage} />
           </Switch>
         </Router>
       </AppContextProvider>
